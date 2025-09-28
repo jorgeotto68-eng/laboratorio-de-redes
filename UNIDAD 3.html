@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            line-height: 1;
+            margin: 0 1rem;
+        }
+    </style>
+</head>
+<body class="bg-[#F0F4F8]">
+    
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#0D1B2A] mb-2">Capa de Red - Internet</h1>
+            <p class="text-lg md:text-xl text-[#4A5568]">se encarga de llevar los paquetes desde el origen hasta el destino.</p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="md:col-span-2 lg:col-span-3 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#0D1B2A] mb-4">El destino puede requerir muchos saltos por enrutadores intermedios</h2>
+                <p class="text-[#4A5568] mb-6">La capa de red es el sistema postal de Internet. Su misión es transportar paquetes de datos desde un dispositivo de origen hasta su destino final, sin importar cuántas redes intermedias deba cruzar. Para lograrlo, sigue un proceso claro y ordenado.</p>
+                <div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flow-step flex-col space-y-2">
+                        <div class="w-24 h-24 bg-[#15ff00] rounded-full flex items-center justify-center text-white text-3xl font-bold">1</div>
+                        <h3 class="font-semibold text-[#0D1B2A]">Direccionamiento de dispositivos finales</h3>
+                        <p class="text-sm text-[#4A5568] max-w-xs">(encabezado IP) dirección del Host.</p>
+                    </div>
+					<div class="flex flex-col md:flex-row items-center justify-around space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flow-step flex-col space-y-2">
+                        <div class="w-24 h-24 bg-[#FFC300] rounded-full flex items-center justify-center text-white text-3xl font-bold">2</div>
+                        <h3 class="font-semibold text-[#0D1B2A]">Encapsulación</h3>
+                        <p class="text-sm text-[#4A5568] max-w-xs">Agrega una "etiqueta" IP Origen > IP Destino.(Paquete)</p>
+                    </div>
+                    <div class="flow-arrow text-[#7B8C98] transform rotate-90 md:rotate-0">→</div>
+                    <div class="flow-step flex-col space-y-2">
+                        <div class="w-24 h-24 bg-[#FF5733] rounded-full flex items-center justify-center text-white text-3xl font-bold">3</div>
+                        <h3 class="font-semibold text-[#0D1B2A]">Encaminamiento</h3>
+                        <p class="text-sm text-[#4A5568] max-w-xs">Los routers eligen la ruta más eficiente para enviar el paquete.</p>
+                    </div>
+                    <div class="flow-arrow text-[#7B8C98] transform rotate-90 md:rotate-0">→</div>
+                    <div class="flow-step flex-col space-y-2">
+                        <div class="w-24 h-24 bg-[#C70039] rounded-full flex items-center justify-center text-white text-3xl font-bold">4</div>
+                        <h3 class="font-semibold text-[#0D1B2A]">Desencapsulación</h3>
+                        <p class="text-sm text-[#4A5568] max-w-xs">Al llegar, se quita la etiqueta para entregar los datos limpios.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#0D1B2A] mb-4">El Protocolo IP</h2>
+                <p class="text-[#004cff] mb-4">Se dividieron en 5 clases.</p>
+				 <p class="text-[#4A5568] mb-4">Dentro de estas tenemos direcciones:</p>
+				 <p class="text-[#000dff] mb-4">IP Privadas: No son enrutables en Internet.</p>
+				 <p class="text-[#5d00ff] mb-4">IP Publicas.</p>
+				 <p class="text-[#f700ff] mb-4">IP Reservadas.</p>
+                <div class="bg-[#F0F4F8] p-4 rounded-lg text-center">
+                    <p class="text-5xl font-bold text-[#FF5733]"> Direcciones IPv4 Privadas</p>
+                    <p class="text-[#4A5568]">del tráfico de Internet se transporta usando el protocolo IP.</p>
+                </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #fff;
+            margin-top: 20px;
+        }
+        .info-header {
+            background-color: #8cbf2e; /* Verde del estilo original */
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50; /* Un verde oscuro para los encabezados */
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e2e2e2;
+        }
+        .class-a { background-color: #e6f2d9; }
+        .class-b { background-color: #f2e6d9; }
+        .class-c { background-color: #d9e6f2; }
+    </style>
+</head>
+<body>
+
+    
+
+    <div class="container">
+        <div class="info-header">
+            Las direcciones privadas de Internet están definidas en RFC 1918: 
+						Solo se usan dentro de una red local. 
+			</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Clase</th>
+                    <th>Rango de direcciones</th>
+                    <th>Prefijo CIDR</th>
+					<th>Usos</th>
+					<th>Combinaciones IPs</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="class-a">
+                    <td>A</td>
+                    <td>10.0.0.0     a    10.255.255.255</td>
+                    <td>10.0.0.0/8</td>
+					<td>Se usa para redes muy grandes, como las de grandes corporaciones y organizaciones.</td>
+					<td>16.777.216</td>
+                </tr>
+                <tr class="class-b">
+                    <td>B</td>
+                    <td>172.16.0.0    a    172.31.255.255</td>
+                    <td>172.16.0.0/12</td>
+					<td>Destinada a redes de tamaño medio, como las de universidades o empresas locales.</td>
+					<td>1.048.576</td>
+                </tr>
+                <tr class="class-c">
+                    <td>C</td>
+                    <td>192.168.0.0    a    192.168.255.255</td>
+                    <td>192.168.0.0/16</td>
+					<td>La más común, utilizada en redes domésticas y pequeñas oficinas</td>
+					<td>65.536</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
+                <div class="mt-4 style= text-align: center;">
+                    <h1 class="font-semibold text-[#ff0062]">Independiente del Medio de Transmision</h1>
+                    <h1 class="font-semibold text-[#ff7700]">Funciona sobre cualquier tecnología: Ethernet, Wi-Fi, Fibra Óptica, etc.</h1>
+                </div>
+            </div>
+			
+            <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador de IP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Descubre tu IP</h1>
+        <p class="text-gray-600 mb-6">Introduce una dirección IP.</p>
+
+        <div class="mb-6">
+            <input type="text" id="ipInput" placeholder="Ej. 192.168.1.1" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 text-center">
+        </div>
+
+        <button onclick="classifyIp()" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            Clasificar IP
+        </button>
+        
+        <div id="result" class="mt-8 p-4 rounded-lg bg-gray-50 text-gray-800 font-medium text-lg">
+            Esperando entrada...
+        </div>
+    </div>
+
+    <script>
+        function classifyIp() {
+            const ip = document.getElementById('ipInput').value.trim();
+            const resultElement = document.getElementById('result');
+
+            // Valida si la entrada es una IP válida.
+            const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+
+            if (!ipRegex.test(ip)) {
+                resultElement.textContent = "IP inválida";
+                resultElement.classList.remove('bg-gray-50', 'bg-green-100', 'bg-red-100');
+                resultElement.classList.add('bg-red-100', 'text-red-800');
+                return;
+            }
+
+            // Convierte la IP a un array de octetos.
+            const octets = ip.split('.');
+            const firstOctet = parseInt(octets[0], 10);
+            let resultText = "";
+
+            // Clasifica la IP según el primer octeto.
+            if (firstOctet >= 1 && firstOctet <= 127) {
+                resultText = `La IP ${ip} pertenece a la Clase A`;
+            } else if (firstOctet >= 128 && firstOctet <= 191) {
+                resultText = `La IP ${ip} pertenece a la Clase B`;
+            } else if (firstOctet >= 192 && firstOctet <= 223) {
+                resultText = `La IP ${ip} pertenece a la Clase C`;
+            } else if (firstOctet >= 224 && firstOctet <= 239) {
+                resultText = `La IP ${ip} pertenece a la Clase D (Multidifusión)`;
+            } else if (firstOctet >= 240 && firstOctet <= 255) {
+                resultText = `La IP ${ip} pertenece a la Clase E (Reservado)`;
+            } else {
+                resultText = "Desconocido";
+            }
+
+            resultElement.textContent = resultText;
+            resultElement.classList.remove('bg-gray-50', 'bg-red-100', 'text-red-800');
+            resultElement.classList.add('bg-green-100');
+        }
+		
+    </script>
+
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#0D1B2A] mb-4">3. El Router: El Cerebro de la Red</h2>
+                <p class="text-[#4A5568] mb-6">Un router es una computadora especializada cuya única misión es conectar redes y tomar decisiones inteligentes sobre dónde enviar cada paquete de datos. Analiza la dirección de destino y lo reenvía por la mejor ruta disponible.</p>
+                 <div class="chart-container">
+                    <canvas id="routerComponentsChart"></canvas>
+                </div>
+                <p class="text-center text-sm text-[#4A5568] mt-2">Visualización conceptual de los componentes de memoria de un router.</p>
+            </div>
+            
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#0D1B2A] mb-4">4. NAT: El Guardián de tu Red</h2>
+                <p class="text-[#4A5568] mb-6">La Traducción de Direcciones de Red (NAT) es esencial. Con miles de millones de dispositivos y solo ~4.3 mil millones de direcciones IPv4, NAT permite que toda una red local (tu casa u oficina) comparta una única dirección IP pública, ahorrando direcciones y añadiendo una capa de seguridad.</p>
+                <div class="chart-container">
+                    <canvas id="natChart"></canvas>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 bg-white rounded-lg shadow-md p-6 flex flex-col justify-center">
+                <h2 class="text-2xl font-bold text-[#0D1B2A] mb-4">El Flujo de NAT</h2>
+                <div class="flex flex-col items-center space-y-4">
+                    <div class="text-center">
+                        <p class="text-4xl">🏠</p>
+                        <p class="font-bold">Red Local</p>
+                        <p class="text-sm bg-blue-100 text-blue-800 rounded-full px-2">192.168.1.10</p>
+                        <p class="text-sm bg-blue-100 text-blue-800 rounded-full px-2 mt-1">192.168.1.11</p>
+                    </div>
+                    <div class="text-2xl">↓</div>
+                    <div class="text-center p-3 bg-[#900C3F] text-white rounded-lg">
+                        <p class="text-4xl">🔄</p>
+                        <p class="font-bold">Router con NAT</p>
+                    </div>
+                    <div class="text-2xl">↓</div>
+                     <div class="text-center">
+                        <p class="text-4xl">🌍</p>
+                        <p class="font-bold">Internet</p>
+                        <p class="text-sm bg-green-100 text-green-800 rounded-full px-2">200.50.10.5</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="md:col-span-2 lg:col-span-3 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-bold text-[#0D1B2A] mb-4">TCP vs. UDP: ¿Confiabilidad o Velocidad?</h2>
+                <p class="text-[#4A5568] mb-6">No todo el tráfico es igual. La capa de transporte ofrece dos protocolos principales: TCP, que es lento pero seguro y garantiza que todo llegue en orden (como un email), y UDP, que es ultrarrápido pero no ofrece garantías (perfecto para streaming o juegos online donde la velocidad es clave).</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="chart-container">
+                        <canvas id="tcpUdpChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="protocolUseChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="text-center mt-12 py-4 border-t border-gray-300">
+            <p class="text-sm text-[#4A5568]">Unidad 3: Redes y Telecomunicaciones.</p>
+        </footer>
+    </div>
+
+    <script>
+        function wrapLabel(label) {
+            const maxLength = 16;
+            if (label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+        
+        const palette = {
+            primary: '#FF5733',
+            secondary: '#FFC300',
+            tertiary: '#C70039',
+            accent: '#900C3F',
+            neutral: '#581845',
+            light: '#F0F4F8'
+        };
+
+        new Chart(document.getElementById('routerComponentsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Memoria Flash (IOS)', 'RAM (En uso)', 'NVRAM (Inicio)', 'ROM (Arranque)'],
+                datasets: [{
+                    label: 'Componentes de Memoria',
+                    data: [60, 25, 10, 5],
+                    backgroundColor: [palette.primary, palette.secondary, palette.accent, palette.tertiary],
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Componentes de Memoria del Router (Conceptual)'
+                    },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('natChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Direcciones IPv4 Disponibles', 'Dispositivos Conectados (Estimado)'],
+                datasets: [{
+                    label: 'Comparación Global',
+                    data: [4.3, 20],
+                    backgroundColor: [palette.secondary, palette.primary],
+                    borderColor: [palette.secondary, palette.primary],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) { return value + ' mil millones' }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'La Necesidad de NAT: Direcciones vs. Dispositivos'
+                    },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('tcpUdpChart'), {
+            type: 'radar',
+            data: {
+                labels: ['Confiabilidad', 'Velocidad', wrapLabel('Orientado a la Conexión'), 'Orden de Paquetes', 'Baja Sobrecarga'],
+                datasets: [{
+                    label: 'TCP',
+                    data: [5, 3, 5, 5, 2],
+                    fill: true,
+                    backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                    borderColor: palette.primary,
+                    pointBackgroundColor: palette.primary,
+                }, {
+                    label: 'UDP',
+                    data: [1, 5, 1, 1, 5],
+                    fill: true,
+                    backgroundColor: 'rgba(255, 195, 0, 0.2)',
+                    borderColor: palette.secondary,
+                    pointBackgroundColor: palette.secondary,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Comparación de Atributos: TCP vs UDP'
+                    },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('protocolUseChart'), {
+            type: 'bar',
+            data: {
+                labels: [wrapLabel('Navegación Web'), wrapLabel('Transferencia Archivos'), 'Streaming', 'Juegos Online'],
+                datasets: [
+                {
+                    label: 'TCP',
+                    data: [100, 100, 0, 0],
+                    backgroundColor: palette.primary,
+                },
+                {
+                    label: 'UDP',
+                    data: [0, 0, 100, 100],
+                    backgroundColor: palette.secondary,
+                }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true,
+                        ticks: {
+                            callback: function(value) { return value + '%' }
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Casos de Uso Comunes por Protocolo'
+                    },
+                    tooltip: { 
+                        callbacks: { title: tooltipTitleCallback },
+                        mode: 'index',
+                        intersect: false
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación de Redes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s ease-in-out;
+            background-color: #f3f4f6;
+        }
+        .slide {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            position: relative;
+        }
+        .bg-color-1 { background-color: #e0f2fe; }
+        .bg-color-2 { background-color: #fce7f3; }
+        .bg-color-3 { background-color: #d1fae5; }
+        .bg-color-4 { background-color: #fef9e7; }
+        .bg-color-5 { background-color: #e0e7ff; }
+        
+        .card {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            text-align: left;
+        }
+        .btn-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(55, 65, 81, 0.7);
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s;
+        }
+        .btn-nav:hover {
+            background-color: rgba(55, 65, 81, 1);
+        }
+        #prevBtn {
+            left: 1rem;
+        }
+        #nextBtn {
+            right: 1rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 1rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+            color: #374151;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #e5e7eb;
+            font-weight: 600;
+        }
+        .video-embed {
+            margin-top: 1.5rem;
+            width: 100%;
+            max-width: 640px;
+            aspect-ratio: 16/9;
+        }
+        .section-separator {
+            border-bottom: 2px solid #9ca3af;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body class="bg-color-1">
+
+    <div id="presentation-container">
+
+        <!-- Diapositiva 1: Introducción -->
+        <div class="slide bg-color-1 active" data-index="0">
+            <div class="card">
+                <h1 style="color: blue; font-size: 24px;">Protocolos y Servicios de Red</h1>
+                <p>La configuración de una red requiere el uso de diferentes protocolos y servicios. A continuación, se explican en detalle los conceptos de OSPF, BGP, RIP, NAT y Firewalling.</p>
+            </div>
+        </div>
+
+        <!-- Diapositiva 2: Protocolos de Enrutamiento -->
+        <div class="slide bg-color-1" data-index="1">
+            <div class="card">
+                <h1 style="color: blue; font-size: 24px;">Protocolo de Enrutamiento</strong></h1>
+                <p>Los protocolos de enrutamiento son esenciales para que los routers puedan intercambiar información sobre las rutas y construir una tabla de enrutamiento que les permita saber a dónde enviar el tráfico.</p>
+                <h3>OSPF (Open Shortest Path First)</h3>
+                <p>OSPF es un protocolo de enrutamiento de <strong>estado de enlace</strong>. Los routers que utilizan OSPF intercambian información sobre la topología de la red, creando un mapa completo de la misma. A partir de este mapa, cada router utiliza el <strong>algoritmo de Dijkstra</strong> para calcular la ruta más corta hacia todos los destinos. OSPF se utiliza principalmente en <strong>redes grandes</strong> dentro de un mismo sistema autónomo (AS). Su métrica se basa en el <strong>costo</strong> de los enlaces. Por lo general, un enlace con un mayor ancho de banda tiene un costo menor, lo que lo hace más preferible. OSPF converge rápidamente y es eficiente en el uso del ancho de banda.</p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 3: BGP y RIP -->
+        <div class="slide bg-color-3" data-index="2">
+            <div class="card">
+                <h3 style="color: blue; font-size: 24px;">BGP (Border Gateway Protocol)</h3>
+                <p>BGP es un protocolo de enrutamiento de <strong>vector de camino</strong> que se utiliza para el intercambio de información entre diferentes sistemas autónomos (AS). Es el protocolo principal de Internet. En lugar de calcular la ruta más corta, BGP toma decisiones basadas en <strong>políticas</strong> y <strong>atributos de ruta</strong>. Por ejemplo, un administrador puede configurar BGP para preferir una ruta sobre otra basándose en el origen o el proveedor de servicio. BGP es complejo y se utiliza principalmente para conectar grandes redes y a <strong>proveedores de servicios de Internet (ISP)</strong> entre sí.</p>
+                <h3>RIP (Routing Information Protocol)</h3>
+                <p>RIP es un protocolo de enrutamiento de <strong>vector de distancia</strong>. Es uno de los protocolos más antiguos. Su métrica se basa en el <strong>número de saltos</strong> (hops) entre el origen y el destino. El camino con menos saltos se considera el mejor. RIP tiene varias limitaciones, como un límite de 15 saltos (lo que lo hace inadecuado para redes grandes) y una convergencia lenta. RIP envía periódicamente su tabla de enrutamiento completa a sus vecinos, lo que lo hace ineficiente en el uso del ancho de banda.</p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 4: Servicios de Red -->
+        <div class="slide bg-color-4" data-index="3">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Servicios de Red</h2>
+                <h3>NAT (Network Address Translation)</h3>
+                <p>NAT es un servicio que permite que múltiples dispositivos en una <strong>red privada</strong> compartan una única <strong>dirección IP pública</strong>. Cuando un dispositivo interno (con una IP privada) quiere acceder a Internet, el router con NAT <strong>reemplaza la dirección IP privada del paquete con su propia dirección IP pública</strong>. Esto conserva las direcciones IP públicas, ya que solo se necesita una para toda la red. También añade una capa de seguridad al ocultar las direcciones IP internas de la red.</p>
+                <h3>Firewalling</h3>
+                <p>El <strong>firewalling</strong> es una técnica de seguridad que controla el <strong>tráfico de red entrante y saliente</strong> de acuerdo con un conjunto de <strong>reglas predefinidas</strong>. Un firewall puede ser un dispositivo de hardware o software que actúa como una barrera entre una red interna segura y redes externas no confiables, como Internet. Los firewalls inspeccionan el tráfico y deciden si permitirlo, denegarlo o registrarlo, basándose en criterios como la dirección IP de origen, la dirección IP de destino, el puerto y el protocolo. Su objetivo principal es <strong>prevenir accesos no autorizados</strong> y proteger la red de posibles amenazas.</p>
+            </div>
+        </div>
+
+        <!-- Diapositiva 5: Tabla de Enrutamiento -->
+        <div class="slide bg-color-5" data-index="4">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Tabla de Enrutamiento</h2>
+                <p>Una tabla de enrutamiento es un conjunto de reglas y directrices que usan los routers (y otros dispositivos de red) para determinar el <strong>mejor camino</strong> para los paquetes de datos desde su origen hasta su destino. 🛣️ Es esencialmente un mapa de la red que el router utiliza para tomar decisiones de reenvío.</p>
+                <h3>¿Cómo funciona una tabla de enrutamiento?</h3>
+                <p>Cuando un router recibe un paquete, examina su <strong>dirección IP de destino</strong>. Luego, busca en su tabla de enrutamiento una entrada que coincida con esa dirección. La tabla de enrutamiento contiene varias columnas con información crucial para el proceso de reenvío:</p>
+                <ul>
+                    <li><strong>Red de Destino:</strong> La dirección de la red a la que el paquete debe ser enviado. A menudo se presenta en formato <strong>CIDR</strong> (Classless Inter-Domain Routing).</li>
+                    <li><strong>Puerta de Enlace (Gateway):</strong> La dirección IP del siguiente router en la ruta hacia la red de destino.</li>
+                    <li><strong>Interfaz de Salida:</strong> La interfaz física del router (por ejemplo, GigabitEthernet0/0) por la que debe salir el paquete.</li>
+                    <li><strong>Métrica:</strong> Un valor numérico que indica la "distancia" o "costo" para llegar a la red de destino. Los routers prefieren las rutas con la métrica más baja.</li>
+                    <li><strong>Distancia Administrativa:</strong> Un valor que indica la <strong>confiabilidad</strong> del origen de la ruta (por ejemplo, si la ruta se aprendió de un protocolo de enrutamiento dinámico como OSPF, o si es una ruta estática configurada manualmente). Una distancia administrativa más baja significa una ruta más confiable.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Diapositiva 6: Tipos de rutas -->
+        <div class="slide bg-color-1" data-index="5">
+            <div class="card">
+                <h3 style="color: blue; font-size: 24px;">Tipos de rutas</h3>
+                <p>Las entradas en una tabla de enrutamiento pueden ser de diferentes tipos:</p>
+                <ul>
+                    <li><strong>Rutas conectadas directamente:</strong> Se crean automáticamente cuando una interfaz del router está configurada con una dirección IP y se activa. Estas rutas indican que el router está directamente conectado a esa red.</li>
+                    <li><strong>Rutas estáticas:</strong> Son rutas que un administrador de red ha configurado <strong>manualmente</strong>. Son útiles para redes pequeñas o para forzar el tráfico a seguir un camino específico.</li>
+                    <li><strong>Rutas dinámicas:</strong> Son rutas que el router aprende automáticamente de otros routers a través de <strong>protocolos de enrutamiento</strong> como RIP, OSPF o BGP. Este método es ideal para redes grandes, ya que las tablas se actualizan automáticamente para reflejar los cambios en la topología de la red.</li>
+                    <li><strong>Ruta por defecto:</strong> Es una ruta "comodín" que se usa cuando el router no encuentra una entrada específica para la red de destino en su tabla. Piensa en ella como la ruta de "último recurso" que dirige el tráfico hacia una puerta de enlace para redes desconocidas, como Internet. 🌐</li>
+                </ul>
+                <p class="mt-4">Este video ofrece una explicación detallada y práctica sobre cómo leer e interpretar una tabla de enrutamiento. </p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 7: Enrutamiento Estático -->
+        <div class="slide bg-color-2" data-index="6">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Enrutamiento Estático</h2>
+                <p>El <strong>enrutamiento estático</strong> es un método de enrutamiento en el que las rutas a las redes remotas se configuran <strong>manualmente</strong> por un administrador en un router. A diferencia del enrutamiento dinámico, que utiliza protocolos para descubrir rutas automáticamente, el enrutamiento estático no depende de la información de otros routers. Las rutas permanecen inalteradas hasta que un administrador las modifica.</p>
+                <h3>Características y Uso</h3>
+                <p>El enrutamiento estático es útil en escenarios específicos:</p>
+                <ul>
+                    <li><strong>Redes pequeñas:</strong> En una red con pocos routers, la configuración manual es más sencilla y eficiente.</li>
+                    <li><strong>Redes con una única salida:</strong> Cuando un router solo tiene una ruta para salir hacia una red remota (un "router de conexión única"), una <strong>ruta estática por defecto</strong> (default route) puede usarse para enviar todo el tráfico no especificado a ese siguiente salto.</li>
+                    <li><strong>Segmentos de red específicos:</strong> Se puede usar para forzar el tráfico a seguir una ruta particular para una red específica, incluso si existen otras rutas dinámicas disponibles.</li>
+                    <li><strong>Mayor seguridad:</strong> Al no enviar actualizaciones de ruta, el enrutamiento estático reduce la superficie de ataque, ya que los atacantes no pueden inyectar rutas falsas fácilmente.</li>
+                </ul>
+                <h3>Ventajas y Desventajas</h3>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>Ventajas</th>
+                            <th>Desventajas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Seguridad:</strong> No hay anuncios de ruta, lo que limita la información que se comparte.</td>
+                            <td><strong>No es escalable:</strong> En redes grandes, la configuración manual es tediosa, propensa a errores y difícil de mantener.</td>
+                        </tr>
+                        <tr>
+                            <td>Bajo consumo de recursos: No requiere el uso de CPU ni ancho de banda para ejecutar protocolos de enrutamiento.</td>
+                            <td><strong>Falta de tolerancia a fallos:</strong> Si una ruta estática falla, el tráfico no se redirige automáticamente, lo que requiere la intervención manual del administrador.</td>
+                        </tr>
+                        <tr>
+                            <td>Simplicidad: La configuración es directa en redes de topología simple.</td>
+                            <td>Requiere conocimientos completos: El administrador debe tener un conocimiento exhaustivo de toda la topología de la red para configurarlo correctamente.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="mt-4"> </p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 8: Enrutamiento Dinámico -->
+        <div class="slide bg-color-3" data-index="7">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Enrutamiento Dinámico</h2>
+                <p>El <strong>enrutamiento dinámico</strong> es un método de enrutamiento en el que los routers aprenden automáticamente las rutas de red y las ajustan en tiempo real, sin intervención manual del administrador. 🔄 Para ello, los routers intercambian información de sus tablas de enrutamiento con sus vecinos a través de <strong>protocolos de enrutamiento dinámico</strong>.</p>
+                <h3>¿Cómo funciona?</h3>
+                <p>Los routers que usan enrutamiento dinámico envían mensajes de actualización a sus vecinos. Estos mensajes contienen información sobre las redes a las que el router tiene acceso. Al recibir estas actualizaciones, cada router actualiza su propia tabla de enrutamiento. Los protocolos de enrutamiento utilizan <strong>algoritmos</strong> para determinar la "mejor" ruta a un destino basándose en una <strong>métrica</strong> específica, como el número de saltos (hops), el costo del enlace o el ancho de banda. Si un enlace falla, los routers detectan el cambio en la topología de la red y automáticamente buscan y eligen una nueva ruta, lo que garantiza la <strong>tolerancia a fallos</strong>.</p>
+                <h3>Ventajas y Desventajas</h3>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>Ventajas</th>
+                            <th>Desventajas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Escalabilidad:</strong> Se adapta bien a redes grandes y complejas, ya que la configuración manual sería inviable.</td>
+                            <td><strong>Consumo de recursos:</strong> Requiere más CPU, RAM y ancho de banda en comparación con el enrutamiento estático.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Adaptabilidad:</strong> Responde automáticamente a los cambios en la topología de la red, como fallos en los enlaces, sin necesidad de intervención manual.</td>
+                            <td><strong>Seguridad:</strong> Los anuncios de ruta pueden ser interceptados o alterados, lo que requiere configuraciones de seguridad adicionales.</td>
+                        </tr>
+                        <tr>
+                            <td>Flexibilidad: Ideal para redes en constante evolución.</td>
+                            <td>Complejidad: La configuración y el diagnóstico de problemas pueden ser más complejos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 9: Protocolos de Enrutamiento Dinámico -->
+        <div class="slide bg-color-4" data-index="8">
+            <div class="card">
+                <h3 style="color: blue; font-size: 24px;">Protocolos de enrutamiento dinámico</h3>
+                <p>Existen dos categorías principales de protocolos:</p>
+                <ul>
+                    <li><strong>IGP (Interior Gateway Protocols):</strong> Se usan para enrutar el tráfico dentro de un mismo <strong>sistema autónomo (AS)</strong>. Los más comunes son:
+                        <ul>
+                            <li><strong>RIP (Routing Information Protocol):</strong> Un protocolo de <strong>vector de distancia</strong> que utiliza el número de saltos como métrica.</li>
+                            <li><strong>OSPF (Open Shortest Path First):</strong> Un protocolo de <strong>estado de enlace</strong> que usa el algoritmo de Dijkstra para encontrar la ruta más corta y eficiente.</li>
+                            <li><strong>EIGRP (Enhanced Interior Gateway Routing Protocol):</strong> Un protocolo híbrido (propiedad de Cisco) que combina características de los protocolos de vector de distancia y de estado de enlace.</li>
+                        </ul>
+                    </li>
+                    <li><strong>EGP (Exterior Gateway Protocols):</strong> Se usan para enrutar el tráfico entre diferentes sistemas autónomos. El único protocolo en uso es:
+                        <ul>
+                            <li><strong>BGP (Border Gateway Protocol):</strong> Es el protocolo principal de Internet, basado en un <strong>vector de camino</strong>, que toma decisiones basadas en políticas y atributos de ruta.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p class="mt-4"> </p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 10: Unidades de Datos de Protocolo (PDU) -->
+        <div class="slide bg-color-5" data-index="9">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Unidades de Datos de Protocolo (PDU)</h2>
+                <p>Las Unidades de Datos de Protocolo (<strong>PDU</strong>) son los bloques de información que se usan para el intercambio de datos en cada capa del modelo OSI. A medida que los datos se mueven por las capas, cada una agrega su propia información de control (encabezados y, a veces, pies de página) en un proceso llamado <strong>encapsulación</strong>, creando una PDU única para esa capa. 📦</p>
+                <div class="section-separator"></div>
+                <p>Aquí están las PDU para cada capa, de la más alta a la más baja:</p>
+                <h3>Capa 7, 6 y 5: Datos</h3>
+                <p>En las capas de <strong>Aplicación</strong>, <strong>Presentación</strong> y <strong>Sesión</strong>, la PDU es simplemente conocida como <strong>Datos</strong>. Estas capas manejan la comunicación de la aplicación, el formato de los datos y la gestión de sesiones.</p>
+                <h3>Capa 4: Segmentos y Datagramas</h3>
+                <p>En la capa de <strong>Transporte</strong>, la PDU se conoce como <strong>Segmento</strong> (cuando se usa <strong>TCP</strong>) o <strong>Datagrama</strong> (cuando se usa <strong>UDP</strong>). Esta capa es responsable de la comunicación de extremo a extremo y de la fiabilidad de la entrega.</p>
+                <ul>
+                    <li><strong>Segmento (TCP):</strong> Se usa para conexiones orientadas a la conexión, lo que garantiza una entrega confiable y ordenada de los datos.</li>
+                    <li><strong>Datagrama (UDP):</strong> Se usa para comunicaciones sin conexión, priorizando la velocidad sobre la fiabilidad.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Diapositiva 11: PDU Capas 3, 2 y 1 -->
+        <div class="slide bg-color-1" data-index="10">
+            <div class="card">
+                <h3 style="color: blue; font-size: 24px;">Capa 3: Paquetes</h3>
+                <p>En la capa de <strong>Red</strong>, la PDU se llama <strong>Paquete</strong>. Esta capa es responsable del enrutamiento lógico de los datos a través de diferentes redes, usando direcciones IP.</p>
+                <h3>Capa 2: Trama</h3>
+                <p>En la capa de <strong>Enlace de Datos</strong>, la PDU se conoce como <strong>Trama</strong>. Aquí se agrega información de direccionamiento físico (direcciones MAC) y se prepara el paquete para ser enviado a través de la red local.</p>
+                <h3>Capa 1: Bits</h3>
+                <p>En la capa <strong>Física</strong>, la PDU más básica es el <strong>Bit</strong>. La trama se convierte en una secuencia de bits, que son representados como señales eléctricas, de luz o de radio, para ser transmitidos por el medio físico de la red.</p>
+            </div>
+        </div>
+
+        <!-- Diapositiva 12: Comandos de Red -->
+        <div class="slide bg-color-2" data-index="11">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Comandos de Red</h2>
+                <p>Los comandos de enrutamiento varían según el sistema operativo o el fabricante del equipo de red (por ejemplo, Cisco IOS, JunOS, o sistemas operativos de PC como Windows o Linux). A continuación, se detallan los comandos más comunes para diferentes plataformas.</p>
+                <h3>Comandos de PC (Windows y Linux) 💻</h3>
+                <p>Estos comandos se ejecutan en la línea de comandos (CMD en Windows) o en la terminal (Linux) y son esenciales para el diagnóstico y la verificación de redes.</p>
+                <ul>
+                    <li><strong>ping:</strong> Verifica la conectividad con otro dispositivo. Envía paquetes ICMP y mide el tiempo de respuesta. Es el comando básico para saber si un host está vivo y accesible.</li>
+                    <li><strong>tracert</strong> (Windows) / <strong>traceroute</strong> (Linux): Muestra la ruta que sigue un paquete hasta un destino, indicando los saltos (routers) que recorre en el camino. Es útil para identificar dónde se pierde un paquete en una ruta.</li>
+                    <li><strong>ipconfig</strong> (Windows) / <strong>ifconfig</strong> o <strong>ip addr</strong> (Linux): Muestra la configuración de las interfaces de red del dispositivo, incluyendo direcciones IP, máscaras de subred y puerta de enlace. ipconfig /all en Windows muestra información más detallada.</li>
+                    <li><strong>netstat:</strong> Muestra las conexiones de red activas, puertos que están escuchando, y la tabla de enrutamiento. Los parámetros como -a (todas las conexiones) o -n (direcciones numéricas) son muy útiles.</li>
+                    <li><strong>arp:</strong> Muestra y modifica la tabla ARP (Address Resolution Protocol), que mapea direcciones IP a direcciones MAC en la red local. El comando arp -a muestra la tabla completa.</li>
+                    <li><strong>nslookup:</strong> Diagnostica problemas con los servidores DNS, permitiendo consultar los registros de nombres de dominio.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 13: Comandos de equipos Cisco -->
+        <div class="slide bg-color-3" data-index="12">
+            <div class="card">
+                <h3 style="color: blue; font-size: 24px;">Comandos de equipos Cisco ⚙ ️</h3>
+                <p>Cisco IOS (Internetwork Operating System) utiliza una jerarquía de modos de configuración.</p>
+                <h4>Modo de usuario (Router>) y privilegiado (Router#)</h4>
+                <p>Estos modos son para la visualización y administración general.</p>
+                <ul>
+                    <li><strong>enable:</strong> Accede al modo privilegiado.</li>
+                    <li><strong>show running-config:</strong> Muestra la configuración actual del dispositivo en la RAM.</li>
+                    <li><strong>show ip route:</strong> Muestra la tabla de enrutamiento del router.</li>
+                    <li><strong>show ip interface brief:</strong> Proporciona un resumen del estado de las interfaces, incluyendo la dirección IP y su estado (up/down).</li>
+                    <li><strong>ping</strong> y <strong>traceroute:</strong> Funcionan de manera similar a los comandos de PC, pero con opciones más avanzadas.</li>
+                </ul>
+                <h4>Modo de configuración global (Router(config)#)</h4>
+                <p>Desde aquí se realizan las configuraciones principales.</p>
+                <ul>
+                    <li><strong>configure terminal:</strong> Accede a este modo de configuración global.</li>
+                    <li><strong>hostname [nombre]:</strong> Cambia el nombre del router.</li>
+                    <li><strong>ip route [red] [mascara] [siguiente-salto-ip]:</strong> Crea una ruta estática.</li>
+                    <li><strong>router [protocolo]:</strong> Habilita un protocolo de enrutamiento dinámico (como OSPF o RIP).</li>
+                    <li><strong>no shutdown:</strong> Activa una interfaz que ha sido administrativamente desactivada.</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 14: Más Comandos Cisco -->
+        <div class="slide bg-color-4" data-index="13">
+            <div class="card">
+                <h4 style="color: blue; font-size: 24px;">Modo de configuración de interfaz (Router(config-if)#)</h4>
+                <p>Para configurar una interfaz de red específica.</p>
+                <ul>
+                    <li><strong>interface [tipo/numero]:</strong> Entra al modo de configuración de una interfaz específica, por ejemplo, interface GigabitEthernet0/1.</li>
+                    <li><strong>ip address [ip] [mascara]:</strong> Asigna una dirección IP y una máscara de subred a la interfaz.</li>
+                    <li><strong>description [texto]:</strong> Añade una descripción a la interfaz.</li>
+                </ul>
+                <p>Para obtener una visión completa de la configuración de un router Cisco, aquí hay un video que explica el enrutamiento y las redes directamente conectadas. </p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 15: Clases de Direcciones IP Privadas -->
+        <div class="slide bg-color-5" data-index="14">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Clases de Direcciones IP Privadas</h2>
+                <p>Aquí tienes un cuadro con las clases de direcciones IP privadas y sus máscaras de red por defecto. 🌐</p>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>Clase</th>
+                            <th>Rango de Direcciones IP Privadas</th>
+                            <th>Máscara de Subred por Defecto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>A</td><td>10.0.0.0 - 10.255.255.255</td><td>255.0.0.0</td></tr>
+                        <tr><td>B</td><td>172.16.0.0 - 172.31.255.255</td><td>255.255.0.0</td></tr>
+                        <tr><td>C</td><td>192.168.0.0 - 192.168.255.255</td><td>255.255.255.0</td></tr>
+                    </tbody>
+                </table>
+                <p class="mt-4"><strong>Explicación:</strong> Las direcciones IP privadas son rangos de direcciones reservados que no son enrutables en Internet. Esto significa que los paquetes con estas direcciones de origen o destino son descartados por los routers de los proveedores de servicios de Internet (ISP). Se utilizan en redes locales (LAN) para que los dispositivos se comuniquen entre sí.</p>
+                <p>El servicio <strong>NAT</strong> (Network Address Translation) permite que los dispositivos con estas direcciones IP privadas puedan acceder a Internet. El router con NAT reemplaza la dirección IP privada del dispositivo por su propia dirección IP pública al enviar el tráfico a Internet.</p>
+            </div>
+        </div>
+
+        <!-- Diapositiva 16: IP Privadas y Hosts -->
+        <div class="slide bg-color-1" data-index="15">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Direcciones IP Privadas y Cantidad de Hosts</h2>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>Clase</th>
+                            <th>Rango de Direcciones Privadas</th>
+                            <th>Máscara de Subred por Defecto</th>
+                            <th>Cantidad de Hosts por Red</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Clase A</td><td>10.0.0.0 a 10.255.255.255</td><td>255.0.0.0 (/8)</td><td>16,777,214 hosts</td></tr>
+                        <tr><td>Clase B</td><td>172.16.0.0 a 172.31.255.255</td><td>255.255.0.0 (/16)</td><td>65,534 hosts</td></tr>
+                        <tr><td>Clase C</td><td>192.168.0.0 a 192.168.255.255</td><td>255.255.255.0 (/24)</td><td>254 hosts</td></tr>
+                    </tbody>
+                </table>
+                <p class="mt-4"><strong>Nota:</strong> La cantidad de hosts se calcula con la fórmula 2n−2, donde n es el número de bits disponibles para la porción de host. Los dos hosts que se restan corresponden a la dirección de red y a la dirección de broadcast, que no se pueden asignar a un dispositivo.</p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 17: Clases de Direcciones IP Públicas -->
+        <div class="slide bg-color-2" data-index="16">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Clases de Direcciones IP Públicas</h2>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>Clase</th>
+                            <th>Rango de Direcciones</th>
+                            <th>Máscara de Subred por Defecto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Clase A</td><td>1.0.0.0 a 126.255.255.255</td><td>255.0.0.0 (/8)</td></tr>
+                        <tr><td>Clase B</td><td>128.0.0.0 a 191.255.255.255</td><td>255.255.0.0 (/16)</td></tr>
+                        <tr><td>Clase C</td><td>192.0.0.0 a 223.255.255.255</td><td>255.255.255.0 (/24)</td></tr>
+                        <tr><td>Clase D</td><td>224.0.0.0 a 239.255.255.255</td><td>(Reservada para Multicast)</td></tr>
+                        <tr><td>Clase E</td><td>240.0.0.0 a 255.255.255.255</td><td>(Reservada para uso Experimental)</td></tr>
+                    </tbody>
+                </table>
+                <p class="mt-4"><strong>Nota importante:</strong> Hoy en día, la asignación de direcciones IP públicas se realiza a través de <strong>CIDR</strong> (Classless Inter-Domain Routing), que reemplazó al sistema de clases original. CIDR permite una asignación más flexible y eficiente de direcciones IP, usando prefijos de longitud variable (por ejemplo, /22) en lugar de las máscaras de clase por defecto.</p>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 18: Subneteo -->
+        <div class="slide bg-color-3" data-index="17">
+            <div class="card">
+                <h2 style="color: blue; font-size: 24px;">Subneteo</h2>
+                <p>A partir de la dirección IP <strong>192.168.1.0/24</strong>, puedes realizar un subneteo hasta la <strong>/30</strong>. El subneteo es el proceso de tomar bits del ID de host para crear subredes, lo que aumenta la cantidad de subredes pero reduce el número de hosts en cada una.</p>
+                <h3>Cálculos del Subneteo</h3>
+                <p>La dirección <strong>192.168.1.0</strong> es de Clase C, lo que significa que la porción de red por defecto tiene 24 bits y la de host tiene 8. Los cálculos se basan en los bits que se "piden prestados" de la porción de host.</p>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>CIDR</th>
+                            <th>Bits prestados</th>
+                            <th>Subredes creadas (2<sup>n</sup>)</th>
+                            <th>Hosts por subred (2<sup>n</sup>-2)</th>
+                            <th>primeras subredes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>/24</td><td>0</td><td>1</td><td>254</td><td>Red: 192.168.1.0, Hosts: 192.168.1.1 - 192.168.1.254, Broadcast: 192.168.1.255</td></tr>
+                        <tr><td>/25</td><td>1</td><td>2</td><td>126</td><td>Red: 192.168.1.0, Hosts: 192.168.1.1 - 192.168.1.126, Broadcast: 192.168.1.127</td></tr>
+                        <tr><td>/26</td><td>2</td><td>4</td><td>62</td><td>Red: 192.168.1.0, Hosts: 192.168.1.1 - 192.168.1.62, Broadcast: 192.168.1.63</td></tr>
+                        <tr><td>/27</td><td>3</td><td>8</td><td>30</td><td>Red: 192.168.1.0, Hosts: 192.168.1.1 - 192.168.1.30, Broadcast: 192.168.1.31</td></tr>
+                        <tr><td>/28</td><td>4</td><td>16</td><td>14</td><td>Red: 192.168.1.0, Hosts: 192.168.1.1 - 192.168.1.14, Broadcast: 192.168.1.15</td></tr>
+                        <tr><td>/29</td><td>5</td><td>32</td><td>6</td><td>Red: 192.168.1.0, Hosts: 192.168.1.1 - 192.168.1.6, Broadcast: 192.168.1.7</td></tr>
+                        <tr><td>/30</td><td>6</td><td>64</td><td>2</td><td>Red: 192.168.1.0, Hosts: 192.168.1.1 - 192.168.1.2, Broadcast: 192.168.1.3</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Diapositiva 19: Fin de la Presentación -->
+        <div class="slide bg-color-4" data-index="18">
+            <div class="card">
+                <h1 class="text-3xl">Fin de la Presentación</h1>
+                
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Botones de Navegación -->
+    <div id="prevBtn" class="btn-nav p-3 sm:p-4 rounded-full shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </div>
+    <div id="nextBtn" class="btn-nav p-3 sm:p-4 rounded-full shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+        const body = document.body;
+
+        const updateSlide = () => {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                    body.className = `bg-color-${(index % 5) + 1}`;
+                }
+            });
+            prevBtn.style.display = currentSlide === 0 ? 'none' : 'block';
+            nextBtn.style.display = currentSlide === totalSlides - 1 ? 'none' : 'block';
+        };
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                nextBtn.click();
+            } else if (e.key === 'ArrowLeft') {
+                prevBtn.click();
+            }
+        });
+
+        updateSlide();
+    </script>
+
+</body>
+</html>

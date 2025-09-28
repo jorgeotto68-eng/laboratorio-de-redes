@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>IP</title>
+
+  <link href="./css/yansu.css" media="screen" rel="stylesheet"
+ type="text/css">
+  <link href="./css/mv_poliformat.css" media="screen" rel="stylesheet"
+ type="text/css">
+  <link href="./css/ejercicio.css" media="screen" rel="stylesheet"
+ type="text/css">
+
+<style type="text/css">
+
+body {
+    background-color: #03193a; /* Fondo más claro y moderno */
+    font-family: 'Open Sans', Arial, sans-serif; /* Fuente moderna */
+    color: #eeebeb; /* Color de texto más oscuro para mejor contraste */
+    line-height: 1.6;
+}
+
+#ipcalc {
+    text-align: center;
+    padding: 10px;
+}
+
+#ipform {
+    display: flex; /* Usamos flexbox para una mejor alineación */
+    justify-content: center;
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en líneas */
+    gap: 20px; /* Espacio entre los bloques */
+    margin: 0px auto;
+}
+
+.ipblock {
+    background-color: #331515; /* Fondo blanco para las cajas */
+    border-radius: 12px; /* Bordes más suaves */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidad */
+    padding: 20px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: transform 0.3s ease; /* Transición suave al pasar el mouse */
+}
+
+.ipblock:hover {
+    transform: translateY(-5px); /* Efecto de "levantar" al pasar el mouse */
+}
+
+.placeholder {
+    margin: 10px 0;
+    font-weight: bold;
+    color: #f8f7f7;
+    display: block;
+}
+
+.datadec, .databin {
+    border: 1px solid #fffafa;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 16px;
+    width: 80px; /* Ajuste para un tamaño más uniforme */
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.datadec:focus, .databin:focus {
+    border-color: #007bff; /* Color azul al enfocar */
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Sombra de enfoque */
+}
+
+input[readonly] {
+    background-color: #f3f5f7; /* Color gris claro para campos de solo lectura */
+    border: 1px solid #dee2e6;
+    color: #131212;
+    cursor: not-allowed;
+}
+
+h3, h1 {
+    color: #007bff; /* Color de encabezado principal */
+    font-weight: 600;
+}
+
+ul {
+    list-style-type: none; /* Quitamos los puntos de la lista */
+    padding: 0;
+}
+
+ul li {
+    padding-left: 1.5em;
+    text-indent: -1.5em;
+}
+
+ul li:before {
+    content: "✔️"; /* Ícono de checkmark */
+    margin-right: 0.5em;
+    color: #28a745; /* Color verde */
+}
+
+#warningArea {
+    display: none;
+    border: 1px solid #ffc107; /* Borde amarillo para advertencia */
+    color: #856404; /* Color de texto más oscuro */
+    background: #fff3cd; /* Fondo amarillo claro */
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out; /* Animación de entrada */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+</style>
+
+
+
+
+<script type="text/javascript">
+
+var rfc3021=false;
+
+function initializeIPCalc(){
+	
+	genIPFields('ipdec','datadec','onChangeDecInput',true);
+	genIPFields('maskdec','datadec','onChangeDecInput');
+	genIPFields('netdec','datadec','',true);
+
+	genIPFields('ipbin','databin','');
+	genIPFields('maskbin','databin','');
+	genIPFields('netbin','databin','');
+	
+	genIPFields('broadcastdec','datadec','');
+	genIPFields('firsthostdec','datadec','');
+	genIPFields('lasthostdec','datadec','');
+
+
+	setFieldValue('ip','192.168.0.1');
+	setPrefix(24);
+}
+
+function genIPFields(placeholderName,className,eventName) {
+	var ipFields="";
+	var idName="";
+	var onChange="";
+	var inputType="number";	
+	var appendAttr="";
+
+	for(var i=1;i<=4;i++){
+		idName=placeholderName+i;
+	
+		if(placeholderName.slice(-3)=='bin'){
+			inputType='text';
+		}
+
+		if(eventName!=""){
+			/*inputType='number';
+			appendAttr='min="0" max="255" onchange="' + eventName + "(event,'" + placeholderName.slice(0,placeholderName.length-3) + "'," + i + ')"';*/
+
+			inputType='text';
+			appendAttr='onchange="' + eventName + "(event,'" + placeholderName.slice(0,placeholderName.length-3) + "'," + i + ')"';
+			appendAttr+=' onkeypress="checkKeyPressed(event, ' + "'" + placeholderName + "'" + ', ' + i + ')"';
+			
+		} else {
+			inputType='text';
+			appendAttr='readonly';		
+		}
+
+		ipFields+='<input type="' + inputType + '" name="' + idName + '" id="' + idName + '" class="' + className + '" ' + appendAttr + '>'
+
+		if(i<4){
+			ipFields+='.';		
+		}		
+	}
+	
+	var placeholder=document.getElementById(placeholderName);
+	placeholder.innerHTML=ipFields + placeholder.innerHTML;
+
+}
+
+function getCurrentMask(){
+	var currMask='';
+	for(var i=1;i<=4;i++){
+		currMask+=document.getElementById('maskdec'+i).value;
+		if(i<4){
+			currMask+='.';
+		}
+	}
+	return currMask;
+}
+
+
+function onChangeDecInput(e,fieldType,num) {
+	var decField=document.getElementById(fieldType+'dec'+num);
+	var val;
+	var foundErr=false;
+	var errMsg="";
+	var oldMask;
+	var newMask;
+
+	try{
+		val=parseInt(decField.value);
+	} catch (e){
+		val=0;
+	}
+
+	if(!isInteger(val)){
+		val=0;
+	}
+	
+	if(val<0){
+		val=0;	
+	} else {
+		if(val>255){
+			val=255;		
+		}	
+	}
+
+	if(fieldType=='mask'){
+		oldMask=getCurrentMask();
+		if((num==1)&&(val<128)){
+			val=128;
+			foundErr=true;
+		} else {
+			if(num==4){
+				if(rfc3021){				
+					if(val>254){
+						foundErr=true;
+						val=254;
+					}
+				} else {
+					if(val>252){
+						foundErr=true;
+						val=252;
+					}
+				}
+			}
+		}
+	}
+	
+	if(val==0){
+		decField.value=0;
+		if(fieldType=='mask'){
+			for(var i=num+1;i<=4;i++){
+				document.getElementById(fieldType+'dec'+i).value=0;	
+				document.getElementById(fieldType+'bin'+i).value=binString(0);
+			}
+		}
+	} else {
+		if(val==255){
+			decField.value=255;
+			if(fieldType=='mask'){
+				for(var i=num-1;i>=1;i--){
+					document.getElementById(fieldType+'dec'+i).value=255;	
+					document.getElementById(fieldType+'bin'+i).value=binString(255);
+				}
+			}
+		} else {
+
+			if(fieldType=='mask'){
+				var valmask=0;
+				var valbit=128;
+				
+				while (valmask<val){
+					valmask=valmask+valbit;
+					valbit/=2;			
+				}
+				
+				if(val!=valmask){
+					val=valmask;
+					foundErr=true;					
+				}
+	
+				for(var i=num-1;i>=1;i--){
+					document.getElementById(fieldType+'dec'+i).value=255;	
+					document.getElementById(fieldType+'bin'+i).value=binString(255);
+				}
+	
+				for(var i=num+1;i<=4;i++){
+					document.getElementById(fieldType+'dec'+i).value=0;	
+					document.getElementById(fieldType+'bin'+i).value=binString(0);
+				}
+			}
+
+		}
+	}
+
+	decField.value=val;
+	document.getElementById(fieldType+'bin'+num).value=binString(decField.value);
+	
+	if(fieldType='mask'){
+		newMask=getCurrentMask();
+	}
+
+	if(foundErr){
+		//alert("Error: " + errMsg);
+		errMsg='Máscara ' + oldMask + ' no válida.<br>Autocorregida a ' + newMask + '.';
+		document.getElementById('warningMsg').innerHTML=errMsg;
+		document.getElementById('warningArea').style.display='block';
+	} else {
+		document.getElementById('warningMsg').innerHTML='';
+		document.getElementById('warningArea').style.display='none';		
+	}
+
+	applyMask();
+}
+
+function checkKeyPressed(event,fieldName,i){
+	var keyPressed=event.which;
+	var keyCode=event.keyCode;
+	
+	var cancelEvent=true;
+
+	if(keyPressed==0){
+		cancelEvent=false;	
+	} else {
+		if(((keyPressed>=48)&&(keyPressed<=57))||(keyPressed==9)){
+			cancelEvent=false;	
+		} else {
+			if((keyPressed==8)||(keyPressed==9)){
+				cancelEvent=false;
+			}
+		}
+	}
+
+	if(cancelEvent){
+		switch(keyPressed) {				
+			case 46:
+				if(!(i<4)){
+					break;				
+				}
+
+			case 13:
+				if(i<4){
+					document.getElementById(fieldName + (i+1)).focus();
+				} else {
+					switch(fieldName) {
+						case 'ipdec':
+							document.getElementById('ipPrefix').focus();
+							break;
+
+						case 'maskdec':
+							document.getElementById('ipdec1').focus();
+							break;
+
+						case 'ipPrefix':
+							document.getElementById('maskdec1').focus();
+							break;								
+					} 
+				}
+				break;				
+		}
+	} 
+
+	if(cancelEvent){
+		event.preventDefault();
+	}	
+	
+}
+
+
+function repeatChar(char,num){
+	var tmp="";
+	
+	for(var i=1;i<=num;i++){
+		tmp+=char;
+	}
+	
+	return (tmp);
+}
+
+function setPrefix(val){
+	document.getElementById('ipPrefix').value=val;
+	document.getElementById('netPrefix').value=val;
+
+	var q=Math.floor(val/8);
+	var r=val % 8;
+	
+	for(var i=1;i<=q;i++){
+		document.getElementById('maskdec'+i).value=255;
+		document.getElementById('maskbin'+i).value=binString(255);
+	}
+	
+
+	if(r>0){
+		//var bitStr="1".repeat(r) + "0".repeat(8-r);
+		var bitStr=repeatChar("1",r) + repeatChar("0",8-r);
+		var newVal=parseInt(bitStr,2);
+		document.getElementById('maskdec'+(q+1)).value=parseInt(newVal);			
+		document.getElementById('maskbin'+(q+1)).value=binString(newVal);
+
+		for(var i=q+2;i<=4;i++){
+			document.getElementById('maskdec'+i).value=0;
+			document.getElementById('maskbin'+i).value=binString(0);
+		}	
+
+	} else {
+		for(var i=q+1;i<=4;i++){
+			document.getElementById('maskdec'+i).value=0;
+			document.getElementById('maskbin'+i).value=binString(0);
+		}		
+	}
+
+	document.getElementById('warningMsg').innerHTML='';
+	document.getElementById('warningArea').style.display='none';		
+	applyMask();
+}
+
+function isInteger(num){
+	if(typeof num==='number' && (num%1)===0){
+		return (true);
+	} else {
+		return (false);
+	}
+}
+
+function onChangePrefix() {
+	var decField=document.getElementById('ipPrefix');
+	var val;
+
+
+	try{
+		val=parseInt(decField.value);
+	} catch (e){
+		val=0;
+	}
+
+	if(!isInteger(val)){
+		val=0;
+	}
+
+	
+	if(val<1){
+		val=1;	
+	} else {
+		if(rfc3021){
+			if(val>31){
+				val=31;		
+			}	
+		} else {
+			if(val>30){
+				val=30;		
+			}	
+		}
+	}
+	
+	setPrefix(val);	
+		
+}
+
+function setFieldValue(fieldType, str){
+	var slices=str.split('.');
+	var decField;
+	var binField;
+	for(var i=1; i<=slices.length; i++){
+		decField=document.getElementById(fieldType+'dec'+ i);
+		decField.value=slices[i-1];
+		binField=document.getElementById(fieldType+'bin'+ i);	
+		binField.value=binString(decField.value);
+	}
+}
+
+function setFieldValueNum(fieldType, num) {
+	var str;
+		
+	for(var i=1;i<=4;i++){
+		if(str==''){
+			sep='';		
+		} else {
+			sep='.';		
+		}
+		str=(num & 0xFF).toString() + sep + str;
+		num=(num>>8);			
+	}
+	return setFieldValue(fieldType,str);
+}
+
+
+function binString(decValue){
+	var binStr=parseInt(decValue).toString(2);
+	//binStr="0".repeat(8-binStr.length) + binStr;
+	binStr=repeatChar("0",8-binStr.length) + binStr;
+	binStr=binStr.slice(0,4) + " " + binStr.slice(4,8);
+	return binStr;	
+}
+
+function countOnes(num){
+	var binStr=parseInt(num).toString(2);
+	var count=0;
+	for(var i=0;i<binStr.length;i++){
+		if(binStr[i]=='1'){
+			count++;		
+		} else {
+			break;
+		}
+	}
+	return(count);
+}
+
+
+function applyMask() {
+	var ip;
+	var mask;
+	var net;
+	var binMask=0;
+	var diff=0;
+	var lastDiff=0;
+	var firsthost;
+	var lasthost;
+	var numhosts;
+	var prefixLength=0;	
+
+	for(var i=1;i<=4;i++){
+		mask=document.getElementById('maskdec'+i).value;
+		prefixLength+=countOnes(mask);
+	}
+	
+	for(var i=1;i<=4;i++){
+		ip=document.getElementById('ipdec'+i).value;
+		mask=document.getElementById('maskdec'+i).value;
+		net=ip & mask;
+
+		broadcast=net + (mask ^ 0xFF);
+				
+		document.getElementById('netbin'+i).value=binString(net);
+		document.getElementById('netdec'+i).value=net;
+		if(prefixLength<31){
+			document.getElementById('broadcastdec'+i).value=broadcast;
+		} else {
+			document.getElementById('broadcastdec'+i).value='---';
+		}	
+		
+		if((i<4)||(prefixLength==31)){
+			firsthost=net;
+			lasthost=broadcast;
+		} else {
+			firsthost=net+1;
+			lasthost=broadcast-1;
+		}
+
+		document.getElementById('firsthostdec'+i).value=firsthost;		
+		document.getElementById('lasthostdec'+i).value=lasthost;
+	
+		diff=lastDiff+(lasthost-firsthost);
+		lastDiff=diff<<8;
+	}	
+	numhosts=diff+1;
+
+	document.getElementById('numdirs').value=numhosts.toLocaleString();	
+	document.getElementById('ipPrefix').value=prefixLength;	
+	document.getElementById('netPrefix').value=prefixLength;	
+}
+
+</script>
+
+
+</head>
+
+<body onload="initializeIPCalc()">
+
+
+<div id="pagina">
+<div id="contenido">
+<h1 class="cabpagina"></h1>
+<h1>Calculadora IP<br>
+</h1>
+
+
+
+<h3>Objetivos</h3>
+<ul>
+	<li><a style="margin-bottom: 0cm; font-weight: normal; line-height: 100%">Identificar la dirección de la subred a la que pertenece una dirección IP (IPv4) con una determinada máscara de subred.</p></li>
+	<li><a style="margin-bottom: 0cm; font-weight: normal; line-height: 100%">Representar en binario direcciones IP y máscaras de 32 bits.</p></li>
+	<li><a style="margin-bottom: 0cm; font-weight: normal; line-height: 100%">Identificar el rango de direcciones asignables a los hosts que pertenecen a la subred identificada.</p></li>
+	<li><a style="margin-bottom: 0cm; font-weight: normal; line-height: 100%">Calcular el número de direcciones IP disponibles en una red IPv4.</p></li>
+</ul>
+
+<h3>Instrucciones</h3>
+
+<p style="margin-bottom: 0cm; font-weight: normal; line-height: 100%">Introduce una dirección IP (IPv4), PULSA ENTER, y obtendrás la 
+dirección de la subred a la que pertenece dicha dirección IP.</p>
+
+<p style="margin-bottom: 0cm; font-weight: normal; line-height: 100%">La dirección de broadcast de dicha subred, la primera y última dirección IP asignable, y el 
+número total de direcciones IP asignables en la subred.</p>
+
+<p style="margin-bottom: 0cm; font-weight: normal; line-height: 100%">Asimismo, podrás obtener la representación en binario de la dirección IP de 32 bits y de la máscara.</p>
+<br/><br/>
+<section id="ipcalc">
+<form id="ipform">
+
+<div id="decimal" class="ipblock">
+	Dirección IP:
+	<div id="ipdec" class="placeholder"> / <input type="text" name="ipPrefix" id="ipPrefix" class="datadec" onchange="onChangePrefix()" onkeypress="checkKeyPressed(event,'ipPrefix',4)">
+	</div> 
+	Máscara de subred:
+	<div id="maskdec" class="placeholder"></div>
+	<div id="warningArea">
+		<div id="warningMsg">&nbsp;</div>
+	</div>
+</div>
+
+
+<div id="subnetcalc">
+	<div id="binary" class="ipblock">
+		Dirección IP (binario):
+		<div id="ipbin" class="placeholder"></div> 
+		Máscara de subred (binario):
+		<div id="maskbin" class="placeholder"></div>
+	</div>
+	
+	<div id="binresults" class="ipblock">
+		Dirección de Red (binario):
+		<div id="netbin" class="placeholder"></div>
+	</div>
+</div>
+
+
+<div id="decresults" class="ipblock">
+	Dirección de Red:
+	<div id="netdec" class="placeholder"> / <input type="text" name="netPrefix" id="netPrefix" class="datadec" readonly></div>
+	Dirección de broadcast:
+	<div id="broadcastdec" class="placeholder"></div>
+	Primera dirección IP:
+	<div id="firsthostdec" class="placeholder"></div>
+	Última dirección IP:
+	<div id="lasthostdec" class="placeholder"></div>
+	Direcciones IP disponibles:
+	<div id="numdirssec" class="placeholder">
+		<input type="text" name="numdirs" id="numdirs" readonly>	
+	</div>
+</div>
+
+</form>
+
+</section>
+
+</div>
+</div>
+</body>
+</html>

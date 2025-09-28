@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+        }
+        .slide {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .slide.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-button {
+            background-color: #4f46e5;
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+            cursor: pointer;
+        }
+        .nav-button:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
+        }
+        .nav-button.disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="container text-center">
+        <!-- Diapositivas -->
+        <div id="slide1" class="slide active">
+            <h1 class="text-4xl font-bold mb-4 text-indigo-600">Comandos de Redes</h1>
+            <p class="text-lg text-gray-700">Explorando `tracert` y `NAT`</p>
+            <div class="mt-8">
+                
+            </div>
+        </div>
+
+        <div id="slide2" class="slide">
+            <h2 class="text-3xl font-semibold mb-4 text-indigo-600">¿Qué es `tracert`?</h2>
+            <p class="text-gray-700 mb-4">Es una herramienta de diagnóstico que mapea la ruta que un paquete de datos toma para llegar a un destino.</p>
+            <div class="bg-gray-100 p-4 rounded-lg">
+                <p class="font-mono text-left">tracert google.com</p>
+            </div>
+            <p class="text-gray-600 mt-4 text-sm">Muestra cada "salto" (router) y el tiempo de respuesta.</p>
+        </div>
+
+        <div id="slide3" class="slide">
+            <h2 class="text-3xl font-semibold mb-4 text-indigo-600">¿Cómo Funciona `tracert`?</h2>
+            <p class="text-gray-700 mb-4">Envía paquetes con un valor de TTL (Time-to-Live) que aumenta progresivamente. Cada router lo decrementa en 1.</p>
+            <ul class="list-disc list-inside text-left mx-auto max-w-sm text-gray-700 space-y-2">
+                <li>TTL=1, el primer router lo descarta y avisa.</li>
+                <li>TTL=2, el segundo router lo descarta y avisa.</li>
+                <li>Y así sucesivamente, hasta que el paquete llega al destino.</li>
+            </ul>
+        </div>
+
+        <div id="slide4" class="slide">
+            <h2 class="text-3xl font-semibold mb-4 text-indigo-600">¿Qué es `NAT`?</h2>
+            <p class="text-gray-700 mb-4">**Network Address Translation** es la técnica para que múltiples dispositivos con IP privada compartan una única IP pública para acceder a Internet.</p>
+            <div class="mt-8">
+                 
+            </div>
+        </div>
+
+        <div id="slide5" class="slide">
+            <h2 class="text-3xl font-semibold mb-4 text-indigo-600">¿Por qué es importante `NAT`?</h2>
+            <p class="text-gray-700 mb-4">Principalmente para **conservar direcciones IPv4**. Permite que miles de dispositivos se conecten a Internet a través de una sola dirección pública, superando el límite de direcciones del protocolo.</p>
+        </div>
+
+        <div id="slide6" class="slide">
+            <h2 class="text-3xl font-semibold mb-4 text-indigo-600">Tipos de `NAT`</h2>
+            <ul class="list-disc list-inside text-left mx-auto max-w-md text-gray-700 space-y-2">
+                <li>**NAT Estático:** Un mapeo uno a uno.</li>
+                <li>**NAT Dinámico:** Un grupo de IPs privadas se mapea a un grupo de IPs públicas.</li>
+                <li>**PAT (Port Address Translation):** El más común. Usa puertos para mapear múltiples IPs privadas a una sola IP pública.</li>
+            </ul>
+        </div>
+
+        <!-- Controles de navegación -->
+        <div class="mt-8 flex justify-between items-center">
+            <button id="prevBtn" class="nav-button disabled">Anterior</button>
+            <span id="pageInfo" class="text-gray-600 text-sm">1 / 6</span>
+            <button id="nextBtn" class="nav-button">Siguiente</button>
+        </div>
+    </div>
+
+    <script>
+        // Lógica de la presentación
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const pageInfo = document.getElementById('pageInfo');
+        let currentSlide = 0;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[n].classList.add('active');
+            pageInfo.textContent = `${n + 1} / ${slides.length}`;
+            prevBtn.classList.toggle('disabled', n === 0);
+            nextBtn.classList.toggle('disabled', n === slides.length - 1);
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        });
+
+        // Inicializar
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

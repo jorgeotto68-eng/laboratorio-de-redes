@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador de Direcciones IP con Rangos V3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .rangos-section {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #007bff;
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            min-height: 50px;
+            font-size: 1.1em;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .publica {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .privada {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .clase {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .rangos-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .rangos-list li {
+            background: #fff;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        .rangos-list li strong {
+            display: block;
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Clasificador de Direcciones IP v4</h1>
+        <p>Ingresa una dirección IP para determinar su clase y tipo (pública/privada).</p>
+
+        <label for="ipInput">Dirección IP:</label>
+        <input type="text" id="ipInput" placeholder="Ej: 192.168.1.1">
+
+        <button onclick="analizarIP()">Analizar IP</button>
+
+        <div id="resultado">
+            <!-- El resultado se mostrará aquí -->
+        </div>
+    </div>
+
+    <!-- Contenedor para los rangos de IP (ahora debajo del clasificador) -->
+    <div class="rangos-section">
+        <h2>Rangos de IP Privadas (RFC 1918)</h2>
+        <p>Estas direcciones no son accesibles a través de Internet.</p>
+        <div class="rangos-list">
+            <ul>
+                <li><strong>Clase A:</strong> 10.0.0.0 - 10.255.255.255</li>
+                <li><strong>Clase B:</strong> 172.16.0.0 - 172.31.255.255</li>
+                <li><strong>Clase C:</strong> 192.168.0.0 - 192.168.255.255</li>
+            </ul>
+        </div>
+
+        <h2>Rangos de IP Públicas</h2>
+        <p>Estas direcciones son enrutables a través de Internet.</p>
+        <div class="rangos-list">
+            <ul>
+                <li><strong>Clase A:</strong> 1.0.0.0 - 9.255.255.255 y 11.0.0.0 - 126.255.255.255</li>
+                <li><strong>Clase B:</strong> 128.0.0.0 - 172.15.255.255 y 172.32.0.0 - 191.255.255.255</li>
+                <li><strong>Clase C:</strong> 192.0.0.0 - 192.167.255.255 y 192.169.0.0 - 223.255.255.255</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function analizarIP() {
+            const ipInput = document.getElementById('ipInput').value.trim();
+            const resultadoDiv = document.getElementById('resultado');
+
+            // --- 1. Validación Básica del Formato IP ---
+            const ipRegex = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+            const match = ipInput.match(ipRegex);
+
+            if (!match) {
+                resultadoDiv.innerHTML = '<span class="error">Error: Formato IP inválido. Debe ser X.X.X.X.</span>';
+                return;
+            }
+
+            const octetos = [
+                parseInt(match[1]),
+                parseInt(match[2]),
+                parseInt(match[3]),
+                parseInt(match[4])
+            ];
+
+            // Validación de rango de octetos (0-255)
+            if (octetos.some(o => o < 0 || o > 255)) {
+                resultadoDiv.innerHTML = '<span class="error">Error: Cada octeto debe estar entre 0 y 255.</span>';
+                return;
+            }
+
+            const primerOcteto = octetos[0];
+            let clase = '';
+            let tipo = '';
+            let tipoClase = '';
+
+            // --- 2. Determinación de la Clase ---
+            if (primerOcteto >= 1 && primerOcteto <= 126) {
+                clase = 'A';
+            } else if (primerOcteto >= 128 && primerOcteto <= 191) {
+                clase = 'B';
+            } else if (primerOcteto >= 192 && primerOcteto <= 223) {
+                clase = 'C';
+            } else if (primerOcteto >= 224 && primerOcteto <= 239) {
+                clase = 'D (Multicast)';
+            } else if (primerOcteto >= 240 && primerOcteto <= 255) {
+                clase = 'E (Experimental/Reservada)';
+            } else if (primerOcteto === 0) {
+                clase = 'Reservada (Red por defecto 0.0.0.0)';
+            } else if (primerOcteto === 127) {
+                clase = 'Reservada (Loopback 127.0.0.0/8)';
+            } else {
+                clase = 'Indefinida/Error';
+            }
+
+            // --- 3. Determinación de Pública o Privada ---
+            // Rangos de direcciones privadas (RFC 1918)
+            const esPrivada = (
+                // Clase A: 10.0.0.0 a 10.255.255.255 (10.0.0.0/8)
+                (primerOcteto === 10) ||
+                // Clase B: 172.16.0.0 a 172.31.255.255 (172.16.0.0/12)
+                (primerOcteto === 172 && octetos[1] >= 16 && octetos[1] <= 31) ||
+                // Clase C: 192.168.0.0 a 192.168.255.255 (192.168.0.0/16)
+                (primerOcteto === 192 && octetos[1] === 168)
+            );
+
+            if (esPrivada) {
+                tipo = 'Privada (RFC 1918)';
+                tipoClase = 'privada';
+            } else if (primerOcteto >= 224) {
+                 // Clase D y E no son "públicas" en el sentido tradicional, son reservadas
+                tipo = 'Reservada';
+                tipoClase = 'error'; // Usamos 'error' para distinguirlas visualmente
+            } else if (primerOcteto === 0 || primerOcteto === 127) {
+                 // Red por defecto o Loopback
+                tipo = 'Reservada';
+                tipoClase = 'error';
+            } else {
+                tipo = 'Pública';
+                tipoClase = 'publica';
+            }
+            
+            // --- 4. Mostrar Resultados ---
+            resultadoDiv.innerHTML = `
+                <p><strong>IP Analizada:</strong> ${ipInput}</p>
+                <p><strong>Clase de Dirección:</strong> <span class="clase">${clase}</span></p>
+                <p><strong>Tipo de Dirección:</strong> <span class="${tipoClase}">${tipo}</span></p>
+            `;
+        }
+    </script>
+
+</body>
+</html>

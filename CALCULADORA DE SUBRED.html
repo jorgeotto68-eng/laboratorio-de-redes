@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUBRED</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Fuente Inter para mejor legibilidad */
+        html { font-family: 'Inter', sans-serif; }
+        /* Estilos personalizados para la interfaz */
+        .card {
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+        }
+        .input-style {
+            transition: all 0.3s ease;
+            @apply border-2 border-gray-300 p-3 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500 shadow-inner;
+        }
+        .result-box {
+            @apply mt-6 p-4 rounded-xl text-lg font-mono break-words;
+            background-color: #e0f7fa;
+            border: 2px solid #00bcd4;
+            color: #006064;
+        }
+        /* Clase para animación de carga */
+        .loading {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div id="calculator-card" class="card w-full max-w-lg p-8 rounded-2xl">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
+            Calculadora de Subredes IP
+        </h1>
+        <p class="text-center text-gray-600 mb-8">
+            Dirección de red para cualquier IP con máscaras entre /24 y /30.
+        </p>
+
+        <!-- Contenedor de la IP y el CIDR -->
+        <div class="space-y-4">
+            <div>
+                <label for="ipAddress" class="block text-sm font-medium text-gray-700 mb-1">
+                    Dirección IP (Ej: 192.168.1.5)
+                </label>
+                <input type="text" id="ipAddress" placeholder="Ej: 10.230.45.3" class="input-style w-full" value="10.230.45.3" autocomplete="off">
+            </div>
+
+            <div>
+                <label for="cidrMask" class="block text-sm font-medium text-gray-700 mb-1">
+                    Máscara CIDR
+                </label>
+                <select id="cidrMask" class="input-style w-full">
+                    <option value="24">/24 (255.255.255.0)</option>
+                    <option value="25">/25 (255.255.255.128)</option>
+                    <option value="26">/26 (255.255.255.192)</option>
+                    <option value="27">/27 (255.255.255.224)</option>
+                    <option value="28">/28 (255.255.255.240)</option>
+                    <option value="29">/29 (255.255.255.248)</option>
+                    <option value="30">/30 (255.255.255.252)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Botón de Calcular -->
+        <div class="mt-8">
+            <button id="calculateButton" onclick="calculateSubnet()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-300 ease-in-out transform hover:scale-[1.01] flex items-center justify-center">
+                <span id="buttonText">Calcular Dirección de Red</span>
+                <div id="loadingIndicator" class="loading hidden ml-3"></div>
+            </button>
+        </div>
+
+        <!-- Área de Resultados Individuales -->
+        <div id="resultArea" class="mt-8 hidden">
+            <h2 class="text-xl font-semibold text-gray-800 mb-3">Resultados para la IP Ingresada</h2>
+
+            <div style="text-align: center;"class="result-box">
+                <p class="text-sm font-normal text-gray-700 mb-1">Dirección de Red</p>
+                <p id="networkAddress" class="text-xl font-bold"></p>
+            </div>
+
+            <!-- Sección de detalles con la nueva información de Clase y Tipo -->
+            <div id="detailsArea" class="mt-4 p-4 bg-white rounded-xl border border-gray-200 text-sm">
+                <!-- NUEVO: Clase de IP -->
+                <p><span class="font-medium text-gray-700">Clase IP:</span> <span id="ipClass" class="font-mono text-blue-600"></span></p>
+                <!-- NUEVO: Tipo de Dirección (Pública/Privada) -->
+                <p><span class="font-medium text-gray-700">Tipo de Dirección:</span> <span id="ipType" class="font-mono text-blue-600"></span></p>
+                
+                <hr class="my-2 border-gray-100">
+
+                <p><span class="font-medium text-gray-700">Máscara Decimal:</span> <span id="decimalMask" class="font-mono text-blue-600"></span></p>
+                <p><span class="font-medium text-gray-700">Hosts Posibles:</span> <span id="hostCount" class="font-mono text-blue-600"></span></p>
+                <p><span class="font-medium text-gray-700">Broadcast:</span> <span id="broadcastAddress" class="font-mono text-blue-600"></span></p>
+            </div>
+        </div>
+
+        <!-- Área de Mensajes de Error -->
+        <div id="messageBox" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-xl hidden" role="alert">
+            <p id="messageText"></p>
+        </div>
+        
+        <!-- Área de Resultados de Todas las Subredes (NUEVO) -->
+        <div id="allSubnetsArea" class="mt-10 pt-4 hidden">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Detalle de Todas las Subredes (/24 a /30)</h2>
+            <div class="overflow-x-auto shadow-lg rounded-xl">
+                <div id="allSubnetsTable">
+                    <!-- La tabla se generará aquí -->
+                </div>
+            </div>
+          
+        </div>
+    </div>
+
+    <script>
+        // Mapeo de la máscara CIDR (bits) a su último octeto decimal, número de hosts, y tamaño del bloque (incremento)
+        const cidrDetails = {
+            24: { mask: 0, hosts: 254, increment: 256 },
+            25: { mask: 128, hosts: 126, increment: 128 },
+            26: { mask: 192, hosts: 62, increment: 64 },
+            27: { mask: 224, hosts: 30, increment: 32 },
+            28: { mask: 240, hosts: 14, increment: 16 },
+            29: { mask: 248, hosts: 6, increment: 8 },
+            30: { mask: 252, hosts: 2, increment: 4 },
+        };
+
+        const ipInput = document.getElementById('ipAddress');
+        const cidrSelect = document.getElementById('cidrMask');
+        const resultArea = document.getElementById('resultArea');
+        const allSubnetsArea = document.getElementById('allSubnetsArea');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const calculateButton = document.getElementById('calculateButton');
+        const buttonText = document.getElementById('buttonText');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        /**
+         * Muestra un mensaje de error en la interfaz.
+         * @param {string} message - El mensaje de error a mostrar.
+         */
+        function displayError(message) {
+            resultArea.classList.add('hidden');
+            allSubnetsArea.classList.add('hidden');
+            messageText.textContent = message;
+            messageBox.classList.remove('hidden');
+        }
+
+        /**
+         * Oculta el área de resultados y el mensaje de error.
+         */
+        function clearMessages() {
+            resultArea.classList.add('hidden');
+            allSubnetsArea.classList.add('hidden');
+            messageBox.classList.add('hidden');
+        }
+
+        /**
+         * Realiza el AND binario entre dos números decimales y devuelve el resultado.
+         * @param {number} a - Primer número (octeto de IP).
+         * @param {number} b - Segundo número (octeto de Máscara).
+         * @returns {number} El resultado del AND binario.
+         */
+        function binaryAnd(a, b) {
+            return a & b;
+        }
+
+        /**
+         * Analiza la IP para determinar su clase y si es privada o pública.
+         * @param {number[]} ipOctets - Array de 4 números [O1, O2, O3, O4].
+         * @returns {{ipClass: string, ipType: string}}
+         */
+        function analyzeIpClassAndType(ipOctets) {
+            const O1 = ipOctets[0];
+            const O2 = ipOctets[1];
+            
+            let ipClass = "N/A o Reservada";
+            let ipType = "Pública"; // Asumimos pública por defecto
+
+            // 1. Determinar Clase (por el primer octeto)
+            if (O1 >= 1 && O1 <= 126) {
+                ipClass = "Clase A";
+            } else if (O1 >= 128 && O1 <= 191) {
+                ipClass = "Clase B";
+            } else if (O1 >= 192 && O1 <= 223) {
+                ipClass = "Clase C";
+            } else if (O1 >= 224 && O1 <= 239) {
+                ipClass = "Clase D (Multicast)";
+            } else if (O1 >= 240 && O1 <= 255) {
+                ipClass = "Clase E (Experimental)";
+            } else if (O1 === 127) {
+                ipClass = "Loopback (127.x.x.x)";
+            }
+            
+            // 2. Determinar si es Privada (RFC 1918)
+            if (O1 === 10) {
+                ipType = "Privada (Clase A)";
+            } else if (O1 === 172 && (O2 >= 16 && O2 <= 31)) {
+                ipType = "Privada (Clase B)";
+            } else if (O1 === 192 && O2 === 168) {
+                ipType = "Privada (Clase C)";
+            } else if (O1 === 127) {
+                ipType = "Loopback";
+            } else if (O1 >= 224) {
+                 // Clase D y E no son direcciones privadas en el sentido RFC1918, son especiales.
+                 ipType = "Especial/Reservada"; 
+            } else {
+                // Si no es ninguna de las anteriores, es Pública
+                ipType = "Pública";
+            }
+            
+            return { ipClass, ipType };
+        }
+
+        /**
+         * Genera el HTML para la tabla de todas las subredes posibles en el rango /24.
+         * @param {number} cidr - La máscara CIDR seleccionada (24-30).
+         * @param {string} prefix - Los primeros tres octetos de la IP (Ej: "192.168.1").
+         * @param {number} userOctet4 - El cuarto octeto de la IP ingresada por el usuario.
+         */
+        function listAllSubnets(cidr, prefix, userOctet4) {
+            const detail = cidrDetails[cidr];
+            const increment = detail.increment;
+            const decimalMask = `255.255.255.${detail.mask}`;
+
+            let tableHtml = `
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-blue-100">
+                        <tr>
+                            <th class="px-3 py-2 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Subred</th>
+                            <th class="px-3 py-2 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Dir. de Red /${cidr}</th>
+                            <th class="px-3 py-2 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Rango Útil</th>
+                            <th class="px-3 py-2 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Broadcast</th>
+                            <th class="px-3 py-2 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Máscara</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100 text-xs md:text-sm">
+            `;
+
+            let subnetCounter = 1;
+            // Iterar desde 0 hasta 255 con el incremento del bloque
+            for (let networkStart = 0; networkStart <= 255; networkStart += increment) {
+                // La Dirección de Red es el inicio del bloque
+                const networkAddress = `${prefix}.${networkStart}`;
+
+                // El Broadcast es el final del bloque (antes del siguiente bloque)
+                const broadcastLastOctet = networkStart + increment - 1;
+                
+                // Si el broadcast excede 255, hemos terminado la red Clase C.
+                if (networkStart > 255 || networkStart === 256) break;
+                
+                const broadcastAddress = `${prefix}.${broadcastLastOctet}`;
+
+                // Rango utilizable: Primera IP (networkStart + 1) a Última IP (broadcastLastOctet - 1)
+                let usableRange = "N/A";
+                let firstHost = networkStart + 1;
+                let lastHost = broadcastLastOctet - 1;
+
+                if (detail.hosts > 0) {
+                    usableRange = `${prefix}.${firstHost} - ${prefix}.${lastHost}`;
+                } else if (cidr === 31) { // /31 no está en el select, pero lo mantenemos como referencia si se expandiera
+                     usableRange = "Sin hosts utilizables";
+                }
+
+                // Resaltar la fila si contiene la IP ingresada por el usuario
+                const isUserSubnet = (userOctet4 >= networkStart && userOctet4 <= broadcastLastOctet);
+                const rowClass = isUserSubnet ? 'bg-yellow-50 font-bold' : 'hover:bg-gray-50';
+
+                tableHtml += `
+                    <tr class="${rowClass}">
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-900">${subnetCounter}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 font-mono">${networkAddress}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 font-mono">${usableRange}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 font-mono">${broadcastAddress}</td>
+                        <td class="px-3 py-2 whitespace-nowrap text-gray-700 font-mono">${decimalMask}</td>
+                    </tr>
+                `;
+                subnetCounter++;
+            }
+
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+
+            return tableHtml;
+        }
+
+        /**
+         * Función principal para calcular el subneteo
+         */
+        function calculateSubnet() {
+            clearMessages();
+
+            // 1. Mostrar estado de carga
+            calculateButton.disabled = true;
+            buttonText.textContent = 'Calculando...';
+            loadingIndicator.classList.remove('hidden');
+
+            // Pequeño delay para simular el proceso y hacer visible el loading indicator
+            setTimeout(() => {
+                try {
+                    const ipAddress = ipInput.value.trim();
+                    const cidr = parseInt(cidrSelect.value, 10);
+
+                    // Validación de formato IP
+                    const ipParts = ipAddress.split('.');
+                    if (ipParts.length !== 4) {
+                        throw new Error('Formato de IP inválido. Debe ser X.X.X.X');
+                    }
+
+                    const ipOctets = ipParts.map(part => {
+                        const num = parseInt(part, 10);
+                        if (isNaN(num) || num < 0 || num > 255) {
+                            throw new Error('Todos los octetos de la IP deben ser números entre 0 y 255.');
+                        }
+                        return num;
+                    });
+
+                    // NUEVO: Análisis de Clase y Tipo de IP
+                    const analysis = analyzeIpClassAndType(ipOctets);
+                    
+                    // Extracción de datos para el cálculo
+                    const maskLastOctet = cidrDetails[cidr].mask;
+                    const decimalMask = `255.255.255.${maskLastOctet}`;
+                    const hostCount = cidrDetails[cidr].hosts;
+
+                    // 2. Cálculo Individual (AND binario en el cuarto octeto)
+                    const networkLastOctet = binaryAnd(ipOctets[3], maskLastOctet);
+                    
+                    // 3. Dirección de Red Individual
+                    const networkAddress = `${ipOctets[0]}.${ipOctets[1]}.${ipOctets[2]}.${networkLastOctet}`;
+
+                    // 4. Dirección de Broadcast Individual
+                    const hostBits = 32 - cidr;
+                    const hostMaxValue = Math.pow(2, hostBits) - 1;
+                    const broadcastLastOctet = networkLastOctet + hostMaxValue;
+                    const broadcastAddress = `${ipOctets[0]}.${ipOctets[1]}.${ipOctets[2]}.${broadcastLastOctet}`;
+
+                    
+                    // 5. Mostrar resultados Individuales
+                    document.getElementById('networkAddress').textContent = networkAddress;
+                    
+                    // NUEVO: Mostrar análisis
+                    document.getElementById('ipClass').textContent = analysis.ipClass;
+                    document.getElementById('ipType').textContent = analysis.ipType;
+
+                    document.getElementById('decimalMask').textContent = decimalMask;
+                    document.getElementById('hostCount').textContent = hostCount;
+                    document.getElementById('broadcastAddress').textContent = broadcastAddress;
+                    resultArea.classList.remove('hidden');
+
+
+                    // 6. Generar y mostrar la tabla de todas las subredes
+                    const prefix = `${ipOctets[0]}.${ipOctets[1]}.${ipOctets[2]}`;
+                    const allSubnetsHtml = listAllSubnets(cidr, prefix, ipOctets[3]);
+                    document.getElementById('allSubnetsTable').innerHTML = allSubnetsHtml;
+                    allSubnetsArea.classList.remove('hidden');
+
+
+                } catch (error) {
+                    // Mostrar error si la validación falla
+                    console.error('Error de cálculo:', error);
+                    displayError(error.message);
+                } finally {
+                    // 7. Restablecer el botón
+                    calculateButton.disabled = false;
+                    buttonText.textContent = 'Calcular Dirección de Red';
+                    loadingIndicator.classList.add('hidden');
+                }
+            }, 50); // Pequeño delay de 50ms para el efecto de carga
+        }
+
+        // Llamar a la función al cargar para mostrar el ejemplo inicial
+        window.onload = function() {
+            // Asegúrate de que el valor inicial del select sea /24
+            document.getElementById('cidrMask').value = '24';
+            calculateSubnet();
+
+            // Permite calcular también al presionar Enter en el campo IP
+            ipInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calculateSubnet();
+                }
+            });
+        };
+    </script>
+</body>
+</html>

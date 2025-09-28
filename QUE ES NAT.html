@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d59f0;
+            color: #1c1c1d;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 md:p-10 lg:p-12">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-2">NAT </h1>
+            <p class="text-md md:text-lg text-gray-600">(Traducción de Direcciones de Red)</p>
+        </header>
+
+        <section class="mb-8">
+            <p class="text-lg leading-relaxed text-justify">
+                La Traducción de Direcciones de Red o NAT, es un método para reasignar un dirección de red en el encabezado IP de los paquetes mientras estos se encuentran en tránsito a través de un dispositivo de enrutamiento de tráfico.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">¿Cómo funciona NAT?</h2>
+            <p class="text-lg leading-relaxed text-justify mb-4">
+                Imagina que tu red doméstica tiene una única dirección IP pública asignada por tu proveedor de servicios de internet (ISP). Dentro de tu casa, dispositivos como tu computadora, teléfono y televisor inteligente tienen su propia dirección IP privada (p. ej., 192.168.1.10, 192.168.1.11). Cuando uno de estos dispositivos quiere acceder a un sitio web, la solicitud se envía a tu router.
+            </p>
+            <p class="text-lg leading-relaxed text-justify">
+                El enrutador, que realiza la función NAT, actúa como traductor. Toma la solicitud saliente de una IP privada, por ejemplo 192.168.1.10, y la reemplaza con su propia dirección IP pública. Para saber a qué dispositivo interno debe enviarse la respuesta, el enrutador también asigna un número de puerto específico a la solicitud. Cuando la respuesta del sitio web regresa a la IP pública del enrutador, este utiliza su tabla interna para asignar el número de puerto a la dirección IP privada original y reenvía los datos al dispositivo correcto.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">¿Por qué es importante NAT?</h2>
+            <p class="text-lg leading-relaxed text-justify">
+                El objetivo principal de NAT es conservar el número de direcciones IP públicas. El protocolo IPv4 original tenía un número limitado de direcciones únicas (unos 4300 millones). Con la proliferación de dispositivos conectados a internet, esta cantidad es insuficiente. NAT permite que miles de dispositivos compartan una única dirección IP pública, lo que prolonga eficazmente la vida útil de IPv4.
+            </p>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Tipos de NAT</h2>
+            <ul class="list-disc list-inside space-y-4 text-lg">
+                <li class="text-lg leading-relaxed">
+                    NAT estática: Se trata de una asignación uno a uno donde una única dirección IP privada se asigna permanentemente a una única dirección IP pública. Se suele utilizar para servidores que necesitan ser accesibles desde el exterior.
+                </li>
+                <li class="text-lg leading-relaxed">
+                    NAT dinámica: Este tipo de NAT asigna direcciones IP privadas a un conjunto de direcciones IP públicas. Cuando un dispositivo solicita acceso a Internet, se le asigna la siguiente IP pública disponible del conjunto.
+                </li>
+                <li class="text-lg leading-relaxed">
+                   Traducción de Direcciones de Puerto (PAT): También conocida como Sobrecarga de NAT, PAT es la forma más común de NAT en redes domésticas. Permite traducir varias direcciones IP privadas a una única dirección IP pública mediante el uso de diferentes **números de puerto** para distinguir entre las distintas conexiones. Este método se describe en la sección "Cómo funciona NAT".
+                </li>
+            </ul>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Beneficios de NAT</h2>
+            <ul class="list-disc list-inside space-y-4 text-lg">
+                <li class="text-lg leading-relaxed">
+                    Conservación de IP: como se mencionó, es crucial para administrar el suministro limitado de direcciones IPv4.
+                </li>
+                <li class="text-lg leading-relaxed">
+                    Seguridad: NAT proporciona una capa de seguridad, ya que los dispositivos de la red interna no están expuestos directamente a internet. Sus direcciones IP privadas están ocultas, lo que dificulta que los atacantes externos las ataquen.
+                </li>
+                <li class="text-lg leading-relaxed">
+                    Flexibilidad: Le permite utilizar cualquier rango de direcciones IP privadas que desee en su red interna sin preocuparse por conflictos con otras redes en Internet.
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">¿Cuáles son las desventajas de NAT?</h2>
+            <p class="text-lg leading-relaxed text-justify">
+                Si bien NAT es increíblemente útil, puede complicar ciertas aplicaciones, como las conexiones punto a punto (P2P) o los juegos en línea, que requieren conexiones directas. Para solucionar esto, se utilizan técnicas como el reenvío de puertos, que configura manualmente el enrutador para dirigir el tráfico entrante específico a un dispositivo específico en la red interna.
+            </p>
+        </section>
+    </div>
+
+</body>
+</html>
